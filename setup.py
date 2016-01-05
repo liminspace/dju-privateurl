@@ -6,7 +6,7 @@ import dju_privateurl
 
 
 setup(
-    name='dju_privateurl',
+    name='dju-privateurl',
     version=dju_privateurl.__version__,
     description='Django Utils: Private URL',
     long_description=open(os.path.join(os.path.dirname(__file__), 'README.rst')).read(),
