@@ -18,7 +18,7 @@ setup(
     include_package_data=True,
     zip_safe=False,  # тому, що вкладаємо статику
     install_requires=[
-        'django==1.9',
+        'django<1.10',
         'simplejson',
         'dju-common',
     ],
