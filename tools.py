@@ -3,6 +3,7 @@ from __future__ import absolute_import
 import os
 import sys
 import subprocess
+import shutil
 from django.core.management.base import OutputWrapper
 from django.core.management.commands.makemessages import check_programs, Command as DjangoMakemessagesCommand
 from django.core.management.commands.compilemessages import Command as DjangoCompilemessagesCommand
@@ -113,6 +114,9 @@ def test(*args):
 
 
 def release(*args):
+    root_dir = os.path.dirname(os.path.abspath(__file__))
+    shutil.rmtree(os.path.join(root_dir, 'build'), ignore_errors=True)
+    shutil.rmtree(os.path.join(root_dir, 'dju_privateurl.egg-info'), ignore_errors=True)
     subprocess.call(['python', 'setup.py', 'bdist_wheel', 'upload'])
 
 
