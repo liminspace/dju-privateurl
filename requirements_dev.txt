@@ -2,5 +2,5 @@ Django<1.10
 coverage==4.0.3
 mysql-python==1.2.5
 pytz==2016.3
-simplejson==3.8.1
+simplejson==3.8.2
 dju-common==0.1.16
