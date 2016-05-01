@@ -14,9 +14,22 @@ class TestPrivateUrl(TestCase):
         t = PrivateUrl.create('test', expire=datetime.timedelta(days=5))
         self.assertIsInstance(t, PrivateUrl)
         self.assertIsNotNone(t.pk)
-        with self.assertRaises(RuntimeError):
-            for i in xrange(100):
-                PrivateUrl.create('test', token_size=1)
+        token_min_size_bak = PrivateUrl.TOKEN_MIN_SIZE
+        try:
+            PrivateUrl.TOKEN_MIN_SIZE = 1
+            with self.assertRaises(RuntimeError):
+                for i in xrange(100):
+                    PrivateUrl.create('test', token_size=1)
+        finally:
+            PrivateUrl.TOKEN_MIN_SIZE = token_min_size_bak
+        with self.assertRaises(AttributeError):
+            PrivateUrl.create('test', token_size='test')
+        with self.assertRaises(AttributeError):
+            PrivateUrl.create('test', token_size=[10, 20, 30])
+        with self.assertRaises(AttributeError):
+            PrivateUrl.create('test', dash_split_each=2)
+        with self.assertRaises(AttributeError):
+            PrivateUrl.create('test', dash_split_each='test')
 
     def test_manager_create_with_replace(self):
         PrivateUrl.create('test', replace=True)
@@ -28,19 +41,19 @@ class TestPrivateUrl(TestCase):
         self.assertEqual(PrivateUrl.objects.filter(action='test', user=user).count(), 1)
 
     def test_token_size(self):
-        t = PrivateUrl.create('test', token_size=50)
+        t = PrivateUrl.create('test', token_size=50, dash_split_each=0)
         self.assertEqual(len(t.token), 50)
         for i in xrange(100):
-            t = PrivateUrl.create('test', token_size=(40, 64))
-            self.assertTrue(40 <= len(t.token) <= 64)
-        self.assertRaises(AssertionError, PrivateUrl.create, 'test', token_size=0)
-        self.assertRaises(AssertionError, PrivateUrl.create, 'test', token_size=-1)
-        self.assertRaises(AssertionError, PrivateUrl.create, 'test', token_size=(0, 0))
-        self.assertRaises(AssertionError, PrivateUrl.create, 'test', token_size=(40, 65))
-        self.assertRaises(AssertionError, PrivateUrl.create, 'test', token_size=(60, 40))
-        self.assertRaises(AssertionError, PrivateUrl.create, 'test', token_size=(-1, 40))
-        self.assertRaises(AssertionError, PrivateUrl.create, 'test', token_size=(-2, -1))
-        self.assertRaises(AssertionError, PrivateUrl.create, 'test', token_size=(40, 40))
+            t = PrivateUrl.create('test', token_size=(36, 65), dash_split_each=0)
+            self.assertTrue(36 <= len(t.token) <= 65)
+        self.assertRaises(AttributeError, PrivateUrl.create, 'test', token_size=0)
+        self.assertRaises(AttributeError, PrivateUrl.create, 'test', token_size=-1)
+        self.assertRaises(AttributeError, PrivateUrl.create, 'test', token_size=(0, 0))
+        self.assertRaises(AttributeError, PrivateUrl.create, 'test', token_size=(36, 65))
+        self.assertRaises(AttributeError, PrivateUrl.create, 'test', token_size=(60, 36))
+        self.assertRaises(AttributeError, PrivateUrl.create, 'test', token_size=(-1, 36))
+        self.assertRaises(AttributeError, PrivateUrl.create, 'test', token_size=(-2, -1))
+        self.assertRaises(AttributeError, PrivateUrl.create, 'test', token_size=(36, 36))
 
     def test_data(self):
         d = {'k': ['v']}
