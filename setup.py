@@ -17,8 +17,7 @@ setup(
     include_package_data=True,
     zip_safe=False,  # because include static
     install_requires=[
-        'django<1.10',
-        'simplejson',
         'dju-common',
+        'django>=1.9.<1.11',
     ],
 )
