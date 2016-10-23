@@ -1,4 +1,2 @@
-dju-privateurl
-==============
-
-Django Utils: Private URL
+No support longer. Use https://github.com/liminspace/django-privateurl
+######################################################################
